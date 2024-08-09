@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #4CAF50;
+    padding: 1em;
+    text-align: center;
+    color: white;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 1em;
+  }
+  
+  main {
+    padding: 2em;
+    text-align: center;
+  }
+  
+  form {
+    display: inline-block;
+    text-align: left;
+  }
+  
+  label, input {
+    display: block;
+    margin: 0.5em 0;
+  }
+  
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  

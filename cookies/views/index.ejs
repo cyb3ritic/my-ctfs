@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CTF Challenge</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Welcome to the Cookie CTF Challenge</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/login">Login</a>
+      <a href="/signup">Sign Up</a>
+      <a href="/admin">Admin</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+  <main>
+    <% if (user) { %>
+      <h2>Welcome, <%= user %>!</h2>
+      <p><%= message %></p>
+    <% } else { %>
+      <h2>Learn about cookies and solve the challenge!</h2>
+    <% } %>
+  </main>
+  <script src="/js/main.js"></script>
+</body>
+</html>
