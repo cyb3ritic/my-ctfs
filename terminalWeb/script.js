@@ -51,6 +51,7 @@ const locationArt = {
 // Task descriptions and scores
 const tasks = {
     'analyze logs': `You analyze the firewall logs and discover a pattern that reveals a vulnerability.`,
+    'scan network': `You scanned the network logs and discovered the open ports and services running on them.`,
     'bypass firewall': `You successfully bypass the firewall using advanced techniques.`,
     'decrypt data': `You decrypted the data and uncovered critical information about the network.`,
     'search vulnerabilities': `You found several vulnerabilities in the server configurations.`,
@@ -66,6 +67,7 @@ const actionScores = {
     'bypass firewall': 20,
     'decrypt data': 15,
     'search vulnerabilities': 15,
+    'scan network': 10,
     'decrypt file': 25,
     'crack password': 30,
     'submit report': 50,
@@ -88,64 +90,69 @@ const commandHandlers = {
             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
         }
     },
-    'analyze logs': () => {
-        if (currentLocation === 'firewall') {
+    'analyze': (args) => {
+        if (args.join(' ') === 'logs' && currentLocation === 'firewall') {
             printOutput(tasks['analyze logs'], 'success');
             updateScore(actionScores['analyze logs']);
         } else {
             printOutput(`You can't analyze logs here.`, 'error');
         }
     },
-    'bypass firewall': () => {
-        if (currentLocation === 'firewall') {
+    'bypass': (args) => {
+        
+        if (args.join(' ') === 'firewall' && currentLocation === 'firewall') {
             printOutput(tasks['bypass firewall'], 'success');
             updateScore(actionScores['bypass firewall']);
         } else {
             printOutput(`You can't bypass the firewall here.`, 'error');
         }
     },
-    'decrypt data': () => {
-        if (currentLocation === 'server') {
+    'decrypt': (args) => {
+        if (args.join(' ') === 'data' && currentLocation === 'server') {
             printOutput(tasks['decrypt data'], 'success');
             updateScore(actionScores['decrypt data']);
+        } 
+        else if (args.join(' ') === 'file' && currentLocation === 'hidden_chamber') {
+            printOutput(tasks['decrypt file'], 'success');
+            updateScore(actionScores['decrypt file']);
         } else {
-            printOutput(`You can't decrypt data here.`, 'error');
+            printOutput(`You can't decrypt ${args.join(' ')} here.`, 'error');
         }
     },
-    'search vulnerabilities': () => {
-        if (currentLocation === 'server') {
+    'search': (args) => {
+        if (args.join(' ') === 'vulnerabilities' && currentLocation === 'server') {
             printOutput(tasks['search vulnerabilities'], 'success');
             updateScore(actionScores['search vulnerabilities']);
         } else {
             printOutput(`You can't search for vulnerabilities here.`, 'error');
         }
     },
-    'decrypt file': () => {
-        if (currentLocation === 'hidden_chamber') {
-            printOutput(tasks['decrypt file'], 'success');
-            updateScore(actionScores['decrypt file']);
+    'scan': (args) => {
+        if (args.join(' ') === 'network' && currentLocation === 'gateway') {
+            printOutput(tasks['scan network'], 'success');
+            updateScore(actionScores['scan network']);
         } else {
-            printOutput(`You can't decrypt the file here.`, 'error');
+            printOutput(`You can't search for vulnerabilities here.`, 'error');
         }
     },
-    'crack password': () => {
-        if (currentLocation === 'hidden_chamber') {
+    'crack': (args) => {
+        if (args.join(' ') === 'password' && currentLocation === 'hidden_chamber') {
             printOutput(tasks['crack password'], 'success');
             updateScore(actionScores['crack password']);
         } else {
             printOutput(`You can't crack the password here.`, 'error');
         }
     },
-    'submit report': () => {
-        if (currentLocation === 'exit_node') {
+    'submit': (args) => {
+        if (args.join(' ') === 'report' && currentLocation === 'exit_node') {
             printOutput(tasks['submit report'], 'success');
             updateScore(actionScores['submit report']);
         } else {
             printOutput(`You can't submit the report here.`, 'error');
         }
     },
-    'review findings': () => {
-        if (currentLocation === 'exit_node') {
+    'review': (args) => {
+        if (args.join(' ') === 'findings' && currentLocation === 'exit_node') {
             printOutput(tasks['review findings'], 'success');
             updateScore(actionScores['review findings']);
         } else {
@@ -170,6 +177,14 @@ const commandHandlers = {
     'clear': () => {
         terminalBody.innerHTML = "";
         createNewPrompt();
+    },
+    'reset': () => {
+        let currentLocation = 'gateway';
+        let score = 0;
+        createNewPrompt();
+        document.getElementById('score').textContent = score;
+        document.getElementById('current-location').textContent = currentLocation;
+        printOutput("Welcome to the Terminal Simulation Game! Type 'help' for available commands.", 'info');
     }
 };
 
@@ -255,215 +270,3 @@ function updateStats() {
 createNewPrompt();
 updateStats();
 printOutput("Welcome to the Terminal Simulation Game! Type 'help' for available commands.", 'info');
-
-
-
-
-
-
-
-
-// const terminalBody = document.querySelector('.terminal-body');
-// const soundEffect = document.getElementById('sound-effect');
-
-// const locations = {
-//     'gateway': `You are at the Gateway. It is the central hub of the network. 
-//     Commands: 'go firewall', 'go server', 'look around', 'scan network'`,
-//     'firewall': `You are in the Firewall Zone. Complex rules protect this area. 
-//     Commands: 'go gateway', 'look around', 'analyze logs', 'bypass firewall'`,
-//     'server': `You are in the Server Room. Critical data and configurations are here. 
-//     Commands: 'go gateway', 'look around', 'decrypt data', 'search vulnerabilities'`,
-//     'hidden_chamber': `You found a Hidden Chamber with encrypted files. 
-//     Commands: 'go server', 'look around', 'decrypt file', 'crack password'`,
-//     'exit_node': `You are at the Exit Node. Submit your findings to complete the maze. 
-//     Commands: 'go hidden_chamber', 'submit report', 'review findings'`,
-// };
-
-// const npcInteractions = {
-//     'admin': `The admin says: "To progress, you must solve the puzzles and decrypt the data. Beware of traps!"`,
-// };
-
-// const tasks = {
-//     'analyze logs': `You analyze the firewall logs and discover a pattern that reveals a vulnerability.`,
-//     'bypass firewall': `You successfully bypass the firewall using advanced techniques.`,
-//     'decrypt data': `You decrypted the data and uncovered critical information about the network.`,
-//     'search vulnerabilities': `You found several vulnerabilities in the server configurations.`,
-//     'decrypt file': `You decrypted the file and discovered a hidden access key.`,
-//     'crack password': `You cracked the password and gained access to the hidden chamber.`,
-//     'submit report': `You submitted your findings and are recognized for your skills.`,
-//     'review findings': `You review your findings and see that you’ve successfully navigated the maze.`,
-// };
-
-// const commands = {
-//     'go': function(args) {
-//         const location = args.join(' ');
-//         if (locations[location]) {
-//             updateLocation(location);
-//         } else {
-//             printOutput(`Unknown location: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'look': function(args) {
-//         const direction = args.join(' ');
-//         if (direction === 'around') {
-//             printOutput(`You see: ${locations[currentLocation]}`, 'info');
-//         } else {
-//             printOutput(`Unknown action: ${direction}`, 'error');
-//         }
-//     },
-//     'analyze': function(args) {
-//         if (args.join(' ') === 'logs' && currentLocation === 'firewall') {
-//             printOutput(tasks['analyze logs'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'bypass': function(args) {
-//         if (args.join(' ') === 'firewall' && currentLocation === 'firewall') {
-//             printOutput(tasks['bypass firewall'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'decrypt': function(args) {
-//         if (args.join(' ') === 'data' && currentLocation === 'server') {
-//             printOutput(tasks['decrypt data'], 'success');
-//         } else if (args.join(' ') === 'file' && currentLocation === 'hidden_chamber') {
-//             printOutput(tasks['decrypt file'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'search': function(args) {
-//         if (args.join(' ') === 'vulnerabilities' && currentLocation === 'server') {
-//             printOutput(tasks['search vulnerabilities'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'crack': function(args) {
-//         if (args.join(' ') === 'password' && currentLocation === 'hidden_chamber') {
-//             printOutput(tasks['crack password'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'submit': function(args) {
-//         if (args.join(' ') === 'report' && currentLocation === 'exit_node') {
-//             printOutput(tasks['submit report'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'review': function(args) {
-//         if (args.join(' ') === 'findings' && currentLocation === 'exit_node') {
-//             printOutput(tasks['review findings'], 'success');
-//         } else {
-//             printOutput(`Unknown action: ${args.join(' ')}`, 'error');
-//         }
-//     },
-//     'help': function() {
-//         printOutput(`<pre>Available commands:
-//   - go <location>: Move to a different location
-//   - look around: Look around the current location
-//   - analyze logs: Analyze firewall logs (requires being in the firewall zone)
-//   - bypass firewall: Bypass the firewall (requires being in the firewall zone)
-//   - decrypt data: Decrypt server data (requires being in the server room)
-//   - search vulnerabilities: Search for vulnerabilities (requires being in the server room)
-//   - decrypt file: Decrypt a file (requires being in the hidden chamber)
-//   - crack password: Crack a password (requires being in the hidden chamber)
-//   - submit report: Submit your findings (requires being at the exit node)
-//   - review findings: Review your findings (requires being at the exit node)
-//   - help: Show this help message</pre>`, 'info');
-//     },
-//     clear: function () {
-//         terminalBody.innerHTML = ""; // Clear the terminal body
-//         createNewPrompt();
-//     },
-// };
-
-// let currentLocation = 'gateway';
-// let inventory = [];
-// let gameState = 'started'; // Track the state of the game
-
-// function handleCommand(command) {
-//     const [cmd, ...args] = command.split(' ');
-//     if (commands[cmd]) {
-//         commands[cmd](args);  // Execute the command with arguments
-//         playSound();
-//     } else {
-//         printOutput(`Unknown command: ${command}`, 'error');
-//         playSound();
-//     }
-// }
-
-// function printOutput(output, type) {
-//     const newOutput = document.createElement('div');
-//     newOutput.classList.add('output');
-//     if (type === 'success') {
-//         newOutput.classList.add('success');
-//     } else if (type === 'error') {
-//         newOutput.classList.add('error');
-//     } else if (type === 'info') {
-//         newOutput.classList.add('info');
-//     }
-//     newOutput.innerHTML = output;
-//     terminalBody.insertBefore(newOutput, document.querySelector('.prompt-line'));
-//     terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll to the bottom
-// }
-
-// function createNewPrompt() {
-//     const promptLine = document.createElement('div');
-//     promptLine.classList.add('prompt-line');
-//     promptLine.innerHTML = `<span class="prompt">game@maze:~$</span> <input type="text" class="command-input" autofocus>`;
-    
-//     terminalBody.appendChild(promptLine);
-//     terminalBody.scrollTop = terminalBody.scrollHeight;
-
-//     const commandInput = document.querySelector('.command-input');
-//     commandInput.addEventListener('keydown', function(event) {
-//         if (event.key === 'Enter') {
-//             const command = commandInput.value.trim();
-//             if (command) {
-//                 printOutput(`<span class="prompt">game@maze:~$</span> ${command}`, 'info');
-//                 handleCommand(command);
-//                 commandInput.value = ''; // Clear the input after processing
-//             }
-//         } else if (event.key === 'ArrowUp') {
-//             if (historyIndex > 0) {
-//                 historyIndex--;
-//                 commandInput.value = commandHistory[historyIndex];
-//             }
-//         } else if (event.key === 'ArrowDown') {
-//             if (historyIndex < commandHistory.length - 1) {
-//                 historyIndex++;
-//                 commandInput.value = commandHistory[historyIndex];
-//             } else {
-//                 commandInput.value = '';
-//             }
-//         }
-//     });
-
-//     commandInput.focus();
-// }
-
-// function updateLocation(location) {
-//     currentLocation = location;
-//     printOutput(`Moved to ${location}. ${locations[location]}`, 'info');
-// }
-
-// function playSound() {
-//     soundEffect.play();
-// }
-
-// // Initialize the terminal with the first prompt
-// createNewPrompt();
-
-// // Focus the input when clicking anywhere in the terminal
-// terminalBody.addEventListener('click', function() {
-//     const commandInput = document.querySelector('.command-input');
-//     if (commandInput) {
-//         commandInput.focus();
-//     }
-// });
-
